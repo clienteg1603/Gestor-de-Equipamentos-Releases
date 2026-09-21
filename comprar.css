@@ -1,0 +1,255 @@
+.purchase-shell {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 64px clamp(20px, 5vw, 64px) 84px;
+}
+
+.purchase-intro {
+  max-width: 820px;
+  margin-bottom: 30px;
+}
+
+.purchase-intro h1 {
+  font-size: clamp(2.45rem, 5vw, 4.5rem);
+}
+
+.purchase-intro .lead {
+  color: var(--muted);
+  font-size: 1.08rem;
+  max-width: 760px;
+}
+
+.purchase-note {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 22px;
+  padding: 15px 18px;
+  border: 1px solid #c4d5d2;
+  border-radius: 14px;
+  background: #e8f0ef;
+  color: var(--graphite);
+}
+
+.purchase-note span {
+  color: var(--muted);
+  font-size: .92rem;
+}
+
+.purchase-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(300px, .75fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.purchase-form,
+.purchase-summary {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.purchase-form {
+  padding: clamp(22px, 3vw, 32px);
+}
+
+.form-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.form-heading h2,
+.purchase-summary h2 {
+  font-size: clamp(1.55rem, 2.2vw, 2.15rem);
+  margin-bottom: 0;
+}
+
+.request-state {
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: .78rem;
+  font-weight: 800;
+}
+
+.request-state.ready {
+  background: #dff0e6;
+  color: #286640;
+}
+
+.purchase-form label {
+  display: block;
+  margin-top: 15px;
+}
+
+.purchase-form label > span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--graphite);
+  font-size: .88rem;
+  font-weight: 800;
+}
+
+.purchase-form label small {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.form-row.two {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.purchase-form input,
+.purchase-form select {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 1px solid #cbd4d3;
+  border-radius: 10px;
+  outline: none;
+  background: white;
+  color: var(--text);
+  font: inherit;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.purchase-form input:focus,
+.purchase-form select:focus {
+  border-color: #6f9ca2;
+  box-shadow: 0 0 0 3px rgba(18, 75, 85, .10);
+}
+
+.field-help {
+  display: block;
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: .82rem;
+  line-height: 1.45;
+}
+
+.form-error {
+  min-height: 22px;
+  margin-top: 12px;
+  color: #a33a35;
+  font-size: .86rem;
+  font-weight: 700;
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.form-actions button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.form-actions button:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+  transform: none;
+}
+
+.purchase-privacy {
+  margin: 13px 0 0;
+}
+
+.purchase-summary {
+  position: sticky;
+  top: 90px;
+  padding: 26px;
+}
+
+.purchase-summary dl {
+  margin: 22px 0;
+}
+
+.purchase-summary dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.purchase-summary dt {
+  color: var(--muted);
+}
+
+.purchase-summary dd {
+  margin: 0;
+  text-align: right;
+  color: var(--graphite);
+  font-weight: 800;
+}
+
+.summary-steps {
+  padding: 16px 17px;
+  border-radius: 13px;
+  background: var(--surface-2);
+}
+
+.summary-steps ol {
+  margin: 10px 0 0;
+  padding-left: 20px;
+  color: var(--graphite);
+  font-size: .9rem;
+}
+
+.summary-steps li + li {
+  margin-top: 7px;
+}
+
+.purchase-summary > .microcopy {
+  margin: 15px 0 0;
+}
+
+@media (max-width: 900px) {
+  .purchase-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .purchase-summary {
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .purchase-shell {
+    padding-top: 42px;
+  }
+
+  .form-row.two {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .form-heading {
+    flex-direction: column;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+  }
+
+  .purchase-summary dl div {
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .purchase-summary dd {
+    text-align: left;
+  }
+}
