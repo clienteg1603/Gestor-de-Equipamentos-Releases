@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Solicite uma licença do Gestor de Equipamentos para os planos Básico ou Pro.">
+  <meta name="theme-color" content="#102a2e">
+  <title>Solicitar licença — Gestor de Equipamentos</title>
+  <link rel="icon" type="image/svg+xml" href="brand-icon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html" aria-label="Gestor de Equipamentos — início">
+      <img class="brand-logo" src="brand-icon.svg" alt="">
+      <span>Gestor de Equipamentos</span>
+    </a>
+    <nav class="nav" aria-label="Navegação principal">
+      <a href="index.html#planos">Planos</a>
+      <a href="index.html#download">Download</a>
+      <a href="suporte.html">Suporte</a>
+    </nav>
+  </header>
+
+  <main class="purchase-shell">
+    <section class="purchase-intro">
+      <a class="back-link" href="index.html#planos">← Voltar aos planos</a>
+      <span class="eyebrow">Licença comercial</span>
+      <h1>Prepare sua solicitação de licença.</h1>
+      <p class="lead">Informe os dados da empresa e o código do computador. O pedido gerado contém somente as informações necessárias para emitir a licença do Gestor.</p>
+      <div class="purchase-note">
+        <strong>Nenhum pagamento é realizado nesta página.</strong>
+        <span>O valor e a forma de pagamento são confirmados no atendimento comercial antes da emissão da licença.</span>
+      </div>
+    </section>
+
+    <section class="purchase-grid">
+      <form class="purchase-form" id="license-request-form" novalidate>
+        <div class="form-heading">
+          <div>
+            <span class="eyebrow">Pedido</span>
+            <h2>Dados da licença</h2>
+          </div>
+          <span class="request-state" id="request-state">Não gerado</span>
+        </div>
+
+        <div class="form-row two">
+          <label>
+            <span>Plano</span>
+            <select id="plan" name="plan" required>
+              <option value="basic">Básico</option>
+              <option value="pro">Pro</option>
+            </select>
+          </label>
+          <label>
+            <span>Período</span>
+            <select id="period" name="period" required>
+              <option value="1m">1 mês</option>
+              <option value="6m">6 meses</option>
+              <option value="1y">1 ano</option>
+              <option value="permanent">Permanente</option>
+            </select>
+          </label>
+        </div>
+
+        <label>
+          <span>Empresa ou nome do titular</span>
+          <input id="company" name="company" type="text" autocomplete="organization" maxlength="120" required placeholder="Ex.: Empresa Exemplo Ltda">
+        </label>
+
+        <div class="form-row two">
+          <label>
+            <span>Responsável</span>
+            <input id="contact-name" name="contact_name" type="text" autocomplete="name" maxlength="100" required placeholder="Nome para contato">
+          </label>
+          <label>
+            <span>E-mail</span>
+            <input id="email" name="email" type="email" autocomplete="email" maxlength="160" required placeholder="nome@empresa.com.br">
+          </label>
+        </div>
+
+        <label>
+          <span>WhatsApp <small>(opcional)</small></span>
+          <input id="whatsapp" name="whatsapp" type="tel" autocomplete="tel" maxlength="30" placeholder="(00) 00000-0000">
+        </label>
+
+        <label>
+          <span>Código deste computador</span>
+          <input id="machine-id" name="machine_id" type="text" maxlength="32" required spellcheck="false" autocomplete="off" placeholder="GE-0000-0000-0000-0000-0000-0000">
+          <small class="field-help">No Gestor: <strong>Configurações → Licença → Licença e ativação</strong>. Copie o campo “Código deste computador”.</small>
+        </label>
+
+        <div class="form-error" id="form-error" role="alert" aria-live="polite"></div>
+
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit">Gerar pedido de licença</button>
+          <button class="btn btn-secondary" id="copy-request" type="button" disabled>Copiar pedido</button>
+        </div>
+        <p class="microcopy purchase-privacy">O arquivo gerado fica no seu computador. Esta página não envia automaticamente os dados preenchidos.</p>
+      </form>
+
+      <aside class="purchase-summary" aria-live="polite">
+        <span class="eyebrow">Resumo</span>
+        <h2 id="summary-title">Básico • 1 mês</h2>
+        <dl>
+          <div><dt>Plano</dt><dd id="summary-plan">Básico</dd></div>
+          <div><dt>Período</dt><dd id="summary-period">1 mês</dd></div>
+          <div><dt>Ativação</dt><dd>Vinculada a este computador</dd></div>
+          <div><dt>Entrega</dt><dd>Arquivo .gelicense</dd></div>
+        </dl>
+        <div class="summary-steps">
+          <strong>Como funciona</strong>
+          <ol>
+            <li>Você gera o pedido com os dados acima.</li>
+            <li>O atendimento confirma valor e pagamento.</li>
+            <li>A licença assinada é emitida para o código informado.</li>
+            <li>No Gestor, abra “Licença e ativação” e importe o arquivo recebido.</li>
+          </ol>
+        </div>
+        <p class="microcopy">Não é necessário reinstalar o programa para ativar a licença.</p>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>
+      <strong>Gestor de Equipamentos</strong>
+      <p>Registre certo. Trabalhe mais rápido.</p>
+    </div>
+    <div class="footer-links">
+      <a href="privacidade.html">Privacidade</a>
+      <a href="suporte.html">Suporte</a>
+      <a href="index.html#download">Download</a>
+    </div>
+  </footer>
+
+  <script src="comprar.js" defer></script>
+</body>
+</html>
