@@ -27,15 +27,24 @@ async function loadLatestRelease() {
     if (!response.ok) throw new Error('release unavailable');
 
     const release = await response.json();
-    const zip = (release.assets || []).find(asset =>
-      asset.name.toLowerCase().endsWith('.zip') &&
-      !asset.name.toLowerCase().endsWith('.zip.sha256')
-    );
+    const assets = release.assets || [];
+    const installer = assets.find(asset => {
+      const name = asset.name.toLowerCase();
+      return name.endsWith('.exe') &&
+        (name.startsWith('instalar_gestor_de_equipamentos_') || name.includes('gestor_de_equipamentos_setup'));
+    });
+    const zip = assets.find(asset => {
+      const name = asset.name.toLowerCase();
+      return name.endsWith('.zip') && !name.endsWith('.zip.sha256');
+    });
 
-    const target = zip?.browser_download_url || release.html_url || fallback;
+    const target = installer?.browser_download_url || zip?.browser_download_url || release.html_url || fallback;
     buttons.forEach(button => button.href = target);
 
-    if (status) status.textContent = release.name || release.tag_name || 'Versão atual disponível';
+    if (status) {
+      const versionName = release.name || release.tag_name || 'Versão atual disponível';
+      status.textContent = installer ? `${versionName} · Instalador para Windows` : versionName;
+    }
     if (date) {
       const formatted = formatDate(release.published_at || release.created_at);
       date.textContent = formatted ? `Publicada em ${formatted}` : '';
