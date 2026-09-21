@@ -10,6 +10,21 @@ const periodLabels = {
   permanent: 'Permanente'
 };
 
+const launchPrices = {
+  basic: {
+    '1m': 'R$ 29,90',
+    '6m': 'R$ 149,90',
+    '1y': 'R$ 269,90',
+    permanent: 'R$ 699,90'
+  },
+  pro: {
+    '1m': 'R$ 59,90',
+    '6m': 'R$ 299,90',
+    '1y': 'R$ 539,90',
+    permanent: 'R$ 1.399,90'
+  }
+};
+
 const form = document.getElementById('license-request-form');
 const plan = document.getElementById('plan');
 const period = document.getElementById('period');
@@ -24,8 +39,13 @@ const requestState = document.getElementById('request-state');
 const summaryTitle = document.getElementById('summary-title');
 const summaryPlan = document.getElementById('summary-plan');
 const summaryPeriod = document.getElementById('summary-period');
+const summaryPrice = document.getElementById('summary-price');
 
 let lastRequest = null;
+
+function currentPrice() {
+  return (launchPrices[plan.value] && launchPrices[plan.value][period.value]) || '';
+}
 
 function readInitialSelection() {
   const params = new URLSearchParams(window.location.search);
@@ -45,6 +65,7 @@ function updateSummary() {
   summaryTitle.textContent = `${planText} • ${periodText}`;
   summaryPlan.textContent = planText;
   summaryPeriod.textContent = periodText;
+  summaryPrice.textContent = currentPrice();
   lastRequest = null;
   copyButton.disabled = true;
   requestState.textContent = 'Não gerado';
@@ -88,6 +109,7 @@ function buildRequest() {
     product: 'Gestor de Equipamentos',
     plan: plan.value,
     period: period.value,
+    launch_price_brl: currentPrice(),
     company: company.value.trim(),
     contact_name: contactName.value.trim(),
     email: email.value.trim(),
@@ -126,6 +148,7 @@ function requestAsText(request) {
     `Pedido: ${request.request_id}`,
     `Plano: ${planLabels[request.plan]}`,
     `Período: ${periodLabels[request.period]}`,
+    `Preço de lançamento: ${request.launch_price_brl}`,
     `Empresa/Titular: ${request.company}`,
     `Responsável: ${request.contact_name}`,
     `E-mail: ${request.email}`,
