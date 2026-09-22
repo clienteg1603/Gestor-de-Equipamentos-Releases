@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import { getDeployStore, getStore } from '@netlify/blobs';
 
 const PRICES = {
   basic: { '1m': 2990, '6m': 14990, '1y': 26990, permanent: 69990 },
@@ -14,9 +15,25 @@ const PERIOD_LABELS = {
 } as const;
 const PERIOD_MONTHS = { '1m': 1, '6m': 6, '1y': 12 } as const;
 const MACHINE_RE = /^GE(?:-[A-F0-9]{4}){6}$/;
+const PAYMENT_STORE = 'geq-payments';
 
 function env(name: string): string {
   return (Netlify.env.get(name) || '').trim();
+}
+
+export function isProductionDeploy(): boolean {
+  return String(Netlify.context?.deploy?.context || '').toLowerCase() === 'production';
+}
+
+export function paymentStore() {
+  if (isProductionDeploy()) {
+    return getStore(PAYMENT_STORE, { consistency: 'strong' });
+  }
+  return getDeployStore(PAYMENT_STORE);
+}
+
+export function paymentOrderKey(orderId: string): string {
+  return `orders/${String(orderId).trim()}`;
 }
 
 export function corsHeaders(request: Request): HeadersInit {
@@ -70,7 +87,8 @@ export function normalizePurchase(raw: Record<string, unknown>) {
   const machineId = normalizeMachineId(raw.machine_id);
 
   if (!Object.prototype.hasOwnProperty.call(PRICES, plan)) throw new Error('PLANO_INVALIDO');
-  if (!Object.prototype.hasOwnProperty.call(PRICES[plan], period)) throw new Error('PERIODO_INVALIDO');
+  const planPrices = PRICES[plan] as Record<string, number>;
+  if (!Object.prototype.hasOwnProperty.call(planPrices, period)) throw new Error('PERIODO_INVALIDO');
   if (!company) throw new Error('EMPRESA_OBRIGATORIA');
   if (!contactName) throw new Error('RESPONSAVEL_OBRIGATORIO');
   if (!/^\S+@\S+\.\S+$/.test(email)) throw new Error('EMAIL_INVALIDO');
@@ -84,7 +102,7 @@ export function normalizePurchase(raw: Record<string, unknown>) {
     email,
     whatsapp,
     machine_id: machineId,
-    price_cents: PRICES[plan][period as keyof (typeof PRICES)[typeof plan]],
+    price_cents: planPrices[period],
   };
 }
 
@@ -107,6 +125,7 @@ export function publicSiteUrl(): string {
 export function paymentsReady(): boolean {
   return env('GEQ_PAYMENTS_ENABLED').toLowerCase() === 'true'
     && Boolean(env('MP_ACCESS_TOKEN'))
+    && Boolean(env('MP_WEBHOOK_SECRET'))
     && Boolean(env('GEQ_ORDER_TOKEN_SECRET'));
 }
 
