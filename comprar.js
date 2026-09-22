@@ -1,3 +1,6 @@
+const API_BASE = 'https://gestor-de-equipamentos.netlify.app/api';
+const CHECKOUT_STORAGE_KEY = 'geq-checkout-v1';
+
 const planLabels = {
   basic: 'Básico',
   pro: 'Pro'
@@ -40,8 +43,11 @@ const summaryTitle = document.getElementById('summary-title');
 const summaryPlan = document.getElementById('summary-plan');
 const summaryPeriod = document.getElementById('summary-period');
 const summaryPrice = document.getElementById('summary-price');
+const startPaymentButton = document.getElementById('start-payment');
+const paymentAvailability = document.getElementById('payment-availability');
 
 let lastRequest = null;
+let paymentEnabled = false;
 
 function currentPrice() {
   return (launchPrices[plan.value] && launchPrices[plan.value][period.value]) || '';
@@ -51,11 +57,15 @@ function readInitialSelection() {
   const params = new URLSearchParams(window.location.search);
   const requestedPlan = (params.get('plan') || '').toLowerCase();
   const requestedPeriod = (params.get('period') || '').toLowerCase();
+  const requestedMachine = (params.get('machine') || '').toUpperCase();
   if (Object.prototype.hasOwnProperty.call(planLabels, requestedPlan)) {
     plan.value = requestedPlan;
   }
   if (Object.prototype.hasOwnProperty.call(periodLabels, requestedPeriod)) {
     period.value = requestedPeriod;
+  }
+  if (requestedMachine) {
+    machineId.value = requestedMachine;
   }
 }
 
@@ -100,6 +110,18 @@ function makeRequestId() {
   return `REQ-${Date.now()}-${random}`;
 }
 
+function formPayload() {
+  return {
+    plan: plan.value,
+    period: period.value,
+    company: company.value.trim(),
+    contact_name: contactName.value.trim(),
+    email: email.value.trim(),
+    whatsapp: whatsapp.value.trim(),
+    machine_id: normalizeMachineId(machineId.value)
+  };
+}
+
 function buildRequest() {
   return {
     format: 'gestor-license-request',
@@ -107,14 +129,8 @@ function buildRequest() {
     request_id: makeRequestId(),
     created_at: new Date().toISOString(),
     product: 'Gestor de Equipamentos',
-    plan: plan.value,
-    period: period.value,
+    ...formPayload(),
     launch_price_brl: currentPrice(),
-    company: company.value.trim(),
-    contact_name: contactName.value.trim(),
-    email: email.value.trim(),
-    whatsapp: whatsapp.value.trim(),
-    machine_id: normalizeMachineId(machineId.value),
     source: 'site-oficial'
   };
 }
@@ -180,6 +196,65 @@ async function copyRequest() {
   }
 }
 
+async function checkPaymentAvailability() {
+  try {
+    const response = await fetch(`${API_BASE}/payment-config`, { cache: 'no-store' });
+    const data = await response.json();
+    paymentEnabled = Boolean(response.ok && data.payments_enabled);
+  } catch {
+    paymentEnabled = false;
+  }
+
+  if (paymentEnabled) {
+    startPaymentButton.hidden = false;
+    paymentAvailability.textContent = 'Pagamento online disponível pelo Mercado Pago. Os meios de pagamento são exibidos no checkout seguro.';
+  } else {
+    startPaymentButton.hidden = true;
+    paymentAvailability.textContent = 'O pagamento online está sendo preparado. Enquanto isso, você pode gerar o pedido manual normalmente.';
+  }
+}
+
+async function startPayment() {
+  machineId.value = normalizeMachineId(machineId.value);
+  if (!validate()) return;
+  if (!paymentEnabled) {
+    errorBox.textContent = 'O pagamento online ainda não está disponível. Gere o pedido manual por enquanto.';
+    return;
+  }
+
+  const originalText = startPaymentButton.textContent;
+  startPaymentButton.disabled = true;
+  startPaymentButton.textContent = 'Abrindo Mercado Pago…';
+  errorBox.textContent = '';
+
+  try {
+    const response = await fetch(`${API_BASE}/create-checkout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formPayload())
+    });
+    const data = await response.json();
+    if (!response.ok || !data.checkout_url || !data.order_id || !data.purchase_token) {
+      throw new Error(data.message || 'Não foi possível iniciar o pagamento.');
+    }
+
+    localStorage.setItem(CHECKOUT_STORAGE_KEY, JSON.stringify({
+      order_id: data.order_id,
+      purchase_token: data.purchase_token,
+      request_id: data.request_id,
+      company: company.value.trim(),
+      price: currentPrice(),
+      saved_at: new Date().toISOString()
+    }));
+
+    window.location.href = data.checkout_url;
+  } catch (error) {
+    errorBox.textContent = error.message || 'Não foi possível abrir o Mercado Pago agora. Tente novamente ou gere o pedido manual.';
+    startPaymentButton.disabled = false;
+    startPaymentButton.textContent = originalText;
+  }
+}
+
 form.addEventListener('submit', event => {
   event.preventDefault();
   machineId.value = normalizeMachineId(machineId.value);
@@ -193,9 +268,11 @@ form.addEventListener('submit', event => {
   errorBox.textContent = '';
 });
 
+startPaymentButton.addEventListener('click', startPayment);
 copyButton.addEventListener('click', copyRequest);
 plan.addEventListener('change', updateSummary);
 period.addEventListener('change', updateSummary);
 
 readInitialSelection();
 updateSummary();
+checkPaymentAvailability();
