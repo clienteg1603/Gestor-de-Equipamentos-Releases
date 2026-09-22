@@ -1,0 +1,26 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/api/payment-config"
+  to = "/.netlify/functions/payment-config"
+  status = 200
+
+[[redirects]]
+  from = "/api/create-checkout"
+  to = "/.netlify/functions/create-checkout"
+  status = 200
+
+[[redirects]]
+  from = "/api/payment-status"
+  to = "/.netlify/functions/payment-status"
+  status = 200
+
+[[redirects]]
+  from = "/api/mercado-pago-webhook"
+  to = "/.netlify/functions/mercado-pago-webhook"
+  status = 200
