@@ -9,6 +9,9 @@ on:
 permissions:
   contents: read
 
+env:
+  NETLIFY_SITE_ID: f89034e4-3a5f-4de4-9c47-9a35f118a641
+
 jobs:
   validar:
     runs-on: ubuntu-latest
@@ -25,4 +28,4 @@ jobs:
         run: npm install --no-audit --no-fund
 
       - name: Empacotar site e funções como o Netlify
-        run: npx --yes netlify-cli@latest build
+        run: npx --yes netlify-cli@latest build --offline
