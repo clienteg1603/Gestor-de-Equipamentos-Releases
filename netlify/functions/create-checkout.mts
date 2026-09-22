@@ -5,6 +5,8 @@ import {
   mpRequest,
   normalizePurchase,
   optionsResponse,
+  paymentOrderKey,
+  paymentStore,
   paymentsReady,
   periodLabel,
   planLabel,
@@ -83,6 +85,26 @@ export default async (request: Request) => {
       body: JSON.stringify(body),
     });
     if (!order.id || !order.checkout_url) throw new Error('MERCADO_PAGO_RESPOSTA_INVALIDA');
+
+    const store = paymentStore();
+    await store.setJSON(paymentOrderKey(order.id), {
+      format_version: 1,
+      order_id: String(order.id),
+      request_id: requestId,
+      external_reference: externalReference,
+      created_at: createdAt,
+      mercado_pago_created_at: order.created_date || '',
+      purchase,
+      expected_price_cents: purchase.price_cents,
+      status: order.status || 'created',
+      status_detail: order.status_detail || '',
+      paid_price_cents: 0,
+      webhook_confirmed: false,
+      webhook_confirmed_at: '',
+      license: null,
+      license_created_at: '',
+    });
+
     return jsonResponse(request, 201, {
       ok: true,
       order_id: order.id,
@@ -92,7 +114,7 @@ export default async (request: Request) => {
       amount_brl: amount,
     });
   } catch (error: any) {
-    console.error('Falha ao criar checkout Mercado Pago:', error?.status || '', error?.data || error?.message);
+    console.error('Falha ao criar/registrar checkout Mercado Pago:', error?.status || '', error?.data || error?.message);
     return jsonResponse(request, 502, {
       ok: false,
       error: 'CHECKOUT_CREATE_FAILED',
