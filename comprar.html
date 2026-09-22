@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Solicite uma licença do Gestor de Equipamentos para os planos Básico ou Pro.">
+  <meta name="description" content="Compre ou solicite uma licença do Gestor de Equipamentos nos planos Básico ou Pro.">
   <meta name="theme-color" content="#102a2e">
-  <title>Solicitar licença — Gestor de Equipamentos</title>
+  <title>Comprar licença — Gestor de Equipamentos</title>
   <link rel="icon" type="image/svg+xml" href="brand-icon.svg">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="comprar.css">
@@ -27,11 +27,11 @@
     <section class="purchase-intro">
       <a class="back-link" href="index.html#planos">← Voltar aos planos</a>
       <span class="eyebrow">Licença comercial</span>
-      <h1>Prepare sua solicitação de licença.</h1>
-      <p class="lead">Informe os dados da empresa e o código do computador. O pedido gerado contém somente as informações necessárias para emitir a licença do Gestor.</p>
+      <h1>Escolha sua licença do Gestor.</h1>
+      <p class="lead">Informe os dados da empresa e o código do computador. O valor é calculado pelo plano e período escolhidos.</p>
       <div class="purchase-note">
-        <strong>Preços de lançamento já definidos.</strong>
-        <span>O valor da opção escolhida aparece no resumo. O pagamento é combinado no atendimento antes da emissão da licença.</span>
+        <strong>Preços de lançamento.</strong>
+        <span id="payment-availability">Consultando disponibilidade do pagamento online…</span>
       </div>
     </section>
 
@@ -94,10 +94,11 @@
         <div class="form-error" id="form-error" role="alert" aria-live="polite"></div>
 
         <div class="form-actions">
-          <button class="btn btn-primary" type="submit">Gerar pedido de licença</button>
+          <button class="btn btn-primary" id="start-payment" type="button" hidden>Pagar com Mercado Pago</button>
+          <button class="btn btn-secondary" type="submit">Gerar pedido manual</button>
           <button class="btn btn-secondary" id="copy-request" type="button" disabled>Copiar pedido</button>
         </div>
-        <p class="microcopy purchase-privacy">O arquivo gerado fica no seu computador. Esta página não envia automaticamente os dados preenchidos.</p>
+        <p class="microcopy purchase-privacy">No pagamento online, os dados necessários ao pedido são enviados ao backend seguro do Gestor e ao Mercado Pago para processar a cobrança. A chave de pagamento nunca fica nesta página.</p>
       </form>
 
       <aside class="purchase-summary" aria-live="polite">
@@ -113,13 +114,13 @@
         <div class="summary-steps">
           <strong>Como funciona</strong>
           <ol>
-            <li>Você gera o pedido com os dados acima.</li>
-            <li>O atendimento confirma a forma de pagamento.</li>
-            <li>A licença assinada é emitida para o código informado.</li>
+            <li>Escolha o plano e o período.</li>
+            <li>Quando o pagamento online estiver ativo, você será redirecionado ao Mercado Pago.</li>
+            <li>Após a confirmação, a licença é preparada para o código informado.</li>
             <li>No Gestor, abra “Licença e ativação” e importe o arquivo recebido.</li>
           </ol>
         </div>
-        <p class="microcopy">Não é necessário reinstalar o programa para ativar a licença.</p>
+        <p class="microcopy">Não é necessário reinstalar o programa para ativar a licença. O pedido manual continua disponível como alternativa.</p>
       </aside>
     </section>
   </main>
