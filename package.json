@@ -1,0 +1,9 @@
+{
+  "name": "gestor-de-equipamentos-site",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Site público e backend de pagamento do Gestor de Equipamentos",
+  "dependencies": {
+    "@netlify/blobs": "^11.1.0"
+  }
+}
